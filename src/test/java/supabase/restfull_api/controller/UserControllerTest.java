@@ -20,9 +20,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/**
- * Integration tests for validating the User API endpoints.
- */
 @SpringBootTest
 @AutoConfigureMockMvc
 class UserControllerTest {

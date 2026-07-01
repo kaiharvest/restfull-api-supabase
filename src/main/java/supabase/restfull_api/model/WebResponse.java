@@ -6,11 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * Standard API Web Response wrapper.
- *
- * @param <T> Response data type
- */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

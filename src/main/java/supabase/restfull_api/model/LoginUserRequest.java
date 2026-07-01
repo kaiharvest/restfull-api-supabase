@@ -8,9 +8,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * DTO for user login requests.
- */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

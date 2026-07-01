@@ -16,9 +16,6 @@ import supabase.restfull_api.repository.UserRepository;
 
 import java.util.UUID;
 
-/**
- * Service to manage User business logic.
- */
 @Service
 public class UserService {
 
@@ -28,11 +25,6 @@ public class UserService {
     @Autowired
     private ValidationService validationService;
 
-    /**
-     * Registers a new user.
-     *
-     * @param request The user registration request
-     */
     @Transactional
     public void register(RegisterUserRequest request) {
         validationService.validate(request);
@@ -50,12 +42,6 @@ public class UserService {
         userRepository.save(user);
     }
 
-    /**
-     * Logins a user and generates a token.
-     *
-     * @param request The login request
-     * @return LoginResponse containing the token and expiration time
-     */
     @Transactional
     public LoginResponse login(LoginUserRequest request) {
         validationService.validate(request);
@@ -81,12 +67,6 @@ public class UserService {
                 .build();
     }
 
-    /**
-     * Gets user profile.
-     *
-     * @param user The authenticated user entity
-     * @return UserResponse containing profile details
-     */
     public UserResponse get(User user) {
         return UserResponse.builder()
                 .username(user.getUsername())
@@ -94,13 +74,6 @@ public class UserService {
                 .build();
     }
 
-    /**
-     * Updates user profile details.
-     *
-     * @param user    The authenticated user entity
-     * @param request The update request
-     * @return UserResponse containing updated profile details
-     */
     @Transactional
     public UserResponse update(User user, UpdateUserRequest request) {
         validationService.validate(request);
@@ -121,11 +94,6 @@ public class UserService {
                 .build();
     }
 
-    /**
-     * Logouts user by clearing active token.
-     *
-     * @param user The user entity to log out
-     */
     @Transactional
     public void logout(User user) {
         user.setToken(null);

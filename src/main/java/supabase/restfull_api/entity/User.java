@@ -9,9 +9,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * Database entity mapping the users table.
- */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

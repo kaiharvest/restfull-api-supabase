@@ -7,9 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * DTO for user profile update requests.
- */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

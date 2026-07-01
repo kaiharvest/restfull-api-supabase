@@ -13,9 +13,6 @@ import org.springframework.web.server.ResponseStatusException;
 import supabase.restfull_api.entity.User;
 import supabase.restfull_api.repository.UserRepository;
 
-/**
- * Argument resolver to inject User entity automatically based on validation of X-API-TOKEN.
- */
 @Component
 public class UserArgumentResolver implements HandlerMethodArgumentResolver {
 

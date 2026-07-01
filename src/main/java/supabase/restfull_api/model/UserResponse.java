@@ -6,9 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * DTO representing user profile details.
- */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
