@@ -69,4 +69,15 @@ public class UserController {
                 .data("OK")
                 .build();
     }
+
+    @GetMapping(
+            path = "/api/users",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public WebResponse<java.util.List<UserResponse>> getAll() {
+        java.util.List<UserResponse> responses = userService.getAll();
+        return WebResponse.<java.util.List<UserResponse>>builder()
+                .data(responses)
+                .build();
+    }
 }

@@ -94,6 +94,16 @@ public class UserService {
                 .build();
     }
 
+    @Transactional(readOnly = true)
+    public java.util.List<UserResponse> getAll() {
+        return userRepository.findAll().stream()
+                .map(user -> UserResponse.builder()
+                        .username(user.getUsername())
+                        .name(user.getName())
+                        .build())
+                .collect(java.util.stream.Collectors.toList());
+    }
+
     @Transactional
     public void logout(User user) {
         user.setToken(null);
