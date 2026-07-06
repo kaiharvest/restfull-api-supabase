@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+    # Service Database PostgreSQL lokal
+    db:
+        image: postgres:16-alpine
+        container_name: restfull_api_db
+        environment:
+            POSTGRES_DB: restfull_db
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: password123
+        ports:
+            - "5433:5432" # Port 5433 di host dipetakan ke 5432 di container agar tidak bentrok jika host sudah punya Postgres
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+        networks:
+            - jaringan_aplikasi
+
+    # Service Aplikasi Spring Boot
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: restfull_api_app
+        ports:
+            - "8080:8080" # Port aplikasi
+        environment:
+            SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/restfull_db
+            SPRING_DATASOURCE_USERNAME: postgres
+            SPRING_DATASOURCE_PASSWORD: password123
+            PORT: 8080
+        depends_on:
+            - db
+        networks:
+            - jaringan_aplikasi
+
+volumes:
+    postgres_data: # Volume untuk menyimpan data database secara persisten
+
+networks:
+    jaringan_aplikasi:
+        driver: bridge

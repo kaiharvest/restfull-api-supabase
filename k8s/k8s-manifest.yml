@@ -1,0 +1,103 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+    name: postgres-pvc
+    labels:
+        app: postgres
+spec:
+    accessModes:
+        - ReadWriteOnce
+    resources:
+        requests:
+            storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: postgres-deployment
+    labels:
+        app: postgres
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: postgres
+    template:
+        metadata:
+            labels:
+                app: postgres
+        spec:
+            containers:
+                - name: postgres
+                  image: postgres:16-alpine
+                  ports:
+                      - containerPort: 5432
+                  env:
+                      - name: POSTGRES_DB
+                        value: restfull_db
+                      - name: POSTGRES_USER
+                        value: postgres
+                      - name: POSTGRES_PASSWORD
+                        value: password123
+                  volumeMounts:
+                      - name: postgres-storage
+                        mountPath: /var/lib/postgresql/data
+            volumes:
+                - name: postgres-storage
+                  persistentVolumeClaim:
+                      claimName: postgres-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: db-service # Nama service ini akan menjadi hostname di Kubernetes (db-service:5432)
+spec:
+    ports:
+        - port: 5432
+    selector:
+        app: postgres
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: app-deployment
+    labels:
+        app: restfull-api
+spec:
+    replicas: 2 # Orkestrasi: Menjalankan 2 replika aplikasi untuk high availability & load balancing
+    selector:
+        matchLabels:
+            app: restfull-api
+    template:
+        metadata:
+            labels:
+                app: restfull-api
+        spec:
+            containers:
+                - name: restfull-api-app
+                  image: restfull-api-supabase:latest # Image lokal hasil build Docker
+                  imagePullPolicy: Never # Menggunakan image dari docker daemon lokal (untuk Minikube)
+                  ports:
+                      - containerPort: 8080
+                  env:
+                      - name: SPRING_DATASOURCE_URL
+                        value: jdbc:postgresql://db-service:5432/restfull_db
+                      - name: SPRING_DATASOURCE_USERNAME
+                        value: postgres
+                      - name: SPRING_DATASOURCE_PASSWORD
+                        value: password123
+                      - name: PORT
+                        value: "8080"
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: app-service
+spec:
+    type: NodePort # Mengekspos service ke port acak di node lokal agar bisa diakses dari komputer pribadi
+    ports:
+        - port: 8080
+          targetPort: 8080
+          nodePort: 30080 # Port luar yang bisa diakses (http://localhost:30080 atau http://<minikube-ip>:30080)
+    selector:
+        app: restfull-api

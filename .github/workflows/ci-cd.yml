@@ -1,0 +1,48 @@
+name: Java CI/CD dengan Docker
+
+# Trigger workflow ketika ada push atau pull request ke branch master/main
+on:
+    push:
+        branches: [ "master", "main" ]
+    pull_request:
+        branches: [ "master", "main" ]
+
+jobs:
+    # Pekerjaan 1: Build dan Testing Aplikasi Java
+    build-and-test:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout Source Code
+              uses: actions/checkout@v4
+
+            - name: Set up JDK 21
+              uses: actions/setup-java@v4
+              with:
+                  java-version: '21'
+                  distribution: 'temurin'
+                  cache: maven
+
+            - name: Build Aplikasi dengan Maven
+              run: mvn clean package -DskipTests # Skip tests jika tidak ada db setup di test workflow, atau sesuaikan jika ada unit test
+
+    # Pekerjaan 2: Build Docker Image (Continuous Integration)
+    build-docker-image:
+        needs: build-and-test
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout Source Code
+              uses: actions/checkout@v4
+
+            - name: Set up Docker Buildx
+              uses: actions/setup-buildx-action@v3
+
+            # Opsi ini mendemonstrasikan build image Docker secara otomatis
+            - name: Build Docker Image
+              uses: docker/build-push-action@v5
+              with:
+                  context: .
+                  file: ./Dockerfile
+                  push: false # Set true jika ingin di-push ke Docker Hub/GHCR setelah setup rahasia (secrets)
+                  tags: indra/restfull-api-supabase:latest
