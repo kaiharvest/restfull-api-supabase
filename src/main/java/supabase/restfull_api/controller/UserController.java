@@ -14,7 +14,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping(
-            path = "/api/users",
+            path = "/api/users/register",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
@@ -26,7 +26,7 @@ public class UserController {
     }
 
     @PostMapping(
-            path = "/api/auth/login",
+            path = "/api/users/login",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
@@ -60,7 +60,7 @@ public class UserController {
     }
 
     @DeleteMapping(
-            path = {"/api/users/current", "/api/users/curerent"},
+            path = "/api/users/logout",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public WebResponse<String> logout(User user) {

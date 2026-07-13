@@ -72,7 +72,7 @@ class TodoControllerTest {
                 .build();
 
         mockMvc.perform(
-                post("/api/todos")
+                post("/api/todos/create")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("X-API-TOKEN", "TOKEN_UJI_COBA")
@@ -97,7 +97,7 @@ class TodoControllerTest {
                 .build();
 
         mockMvc.perform(
-                post("/api/todos")
+                post("/api/todos/create")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request))
@@ -114,7 +114,7 @@ class TodoControllerTest {
                 .build();
 
         mockMvc.perform(
-                post("/api/todos")
+                post("/api/todos/create")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("X-API-TOKEN", "TOKEN_UJI_COBA")
@@ -142,7 +142,7 @@ class TodoControllerTest {
         todoRepository.save(todo2);
 
         mockMvc.perform(
-                get("/api/todos")
+                get("/api/todos/list")
                         .accept(MediaType.APPLICATION_JSON)
                         .header("X-API-TOKEN", "TOKEN_UJI_COBA")
         ).andExpectAll(
@@ -165,7 +165,7 @@ class TodoControllerTest {
         todoRepository.save(todo);
 
         mockMvc.perform(
-                get("/api/todos/" + todo.getId())
+                get("/api/todos/detail/" + todo.getId())
                         .accept(MediaType.APPLICATION_JSON)
                         .header("X-API-TOKEN", "TOKEN_UJI_COBA")
         ).andExpectAll(
@@ -178,7 +178,7 @@ class TodoControllerTest {
     @Test
     void testGetTodoByIdNotFound() throws Exception {
         mockMvc.perform(
-                get("/api/todos/99999")
+                get("/api/todos/detail/99999")
                         .accept(MediaType.APPLICATION_JSON)
                         .header("X-API-TOKEN", "TOKEN_UJI_COBA")
         ).andExpectAll(
@@ -206,7 +206,7 @@ class TodoControllerTest {
                 .build();
 
         mockMvc.perform(
-                put("/api/todos/" + todo.getId())
+                patch("/api/todos/update/" + todo.getId())
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("X-API-TOKEN", "TOKEN_UJI_COBA")
@@ -232,7 +232,7 @@ class TodoControllerTest {
         todoRepository.save(todo);
 
         mockMvc.perform(
-                delete("/api/todos/" + todo.getId())
+                delete("/api/todos/delete/" + todo.getId())
                         .accept(MediaType.APPLICATION_JSON)
                         .header("X-API-TOKEN", "TOKEN_UJI_COBA")
         ).andExpectAll(

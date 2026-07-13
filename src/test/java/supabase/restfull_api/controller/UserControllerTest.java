@@ -47,7 +47,7 @@ class UserControllerTest {
                 .build();
 
         mockMvc.perform(
-                post("/api/users")
+                post("/api/users/register")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request))
@@ -69,7 +69,7 @@ class UserControllerTest {
                 .build();
 
         mockMvc.perform(
-                post("/api/users")
+                post("/api/users/register")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request))
@@ -95,7 +95,7 @@ class UserControllerTest {
                 .build();
 
         mockMvc.perform(
-                post("/api/users")
+                post("/api/users/register")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request))
@@ -120,7 +120,7 @@ class UserControllerTest {
                 .build();
 
         String responseContent = mockMvc.perform(
-                post("/api/auth/login")
+                post("/api/users/login")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request))
@@ -152,7 +152,7 @@ class UserControllerTest {
                 .build();
 
         mockMvc.perform(
-                post("/api/auth/login")
+                post("/api/users/login")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request))
@@ -263,7 +263,7 @@ class UserControllerTest {
         userRepository.save(user);
 
         mockMvc.perform(
-                delete("/api/users/current")
+                delete("/api/users/logout")
                         .accept(MediaType.APPLICATION_JSON)
                         .header("X-API-TOKEN", "LOGOUT_TOKEN")
         ).andExpectAll(

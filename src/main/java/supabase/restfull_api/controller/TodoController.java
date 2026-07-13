@@ -23,7 +23,7 @@ public class TodoController {
 
     // Endpoint untuk membuat Todo baru
     @PostMapping(
-            path = "/api/todos",
+            path = "/api/todos/create",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
@@ -36,7 +36,7 @@ public class TodoController {
 
     // Endpoint untuk melihat semua Todo milik pengguna yang login
     @GetMapping(
-            path = "/api/todos",
+            path = "/api/todos/list",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public WebResponse<List<TodoResponse>> list(User user) {
@@ -48,7 +48,7 @@ public class TodoController {
 
     // Endpoint untuk melihat detail Todo berdasarkan ID
     @GetMapping(
-            path = "/api/todos/{id}",
+            path = "/api/todos/detail/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public WebResponse<TodoResponse> get(User user, @PathVariable("id") Long id) {
@@ -59,8 +59,8 @@ public class TodoController {
     }
 
     // Endpoint untuk memperbarui data Todo
-    @PutMapping(
-            path = "/api/todos/{id}",
+    @PatchMapping(
+            path = "/api/todos/update/{id}",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
@@ -73,7 +73,7 @@ public class TodoController {
 
     // Endpoint untuk menghapus data Todo
     @DeleteMapping(
-            path = "/api/todos/{id}",
+            path = "/api/todos/delete/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public WebResponse<String> delete(User user, @PathVariable("id") Long id) {

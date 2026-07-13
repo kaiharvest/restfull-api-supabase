@@ -29,13 +29,14 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/api/users",
+              "raw": "{{baseUrl}}/api/users/register",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
-                "users"
+                "users",
+                "register"
               ]
             }
           },
@@ -80,13 +81,13 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/api/auth/login",
+              "raw": "{{baseUrl}}/api/users/login",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
-                "auth",
+                "users",
                 "login"
               ]
             }
@@ -169,14 +170,14 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/users/current",
+              "raw": "{{baseUrl}}/api/users/logout",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "users",
-                "current"
+                "logout"
               ]
             }
           },
@@ -249,13 +250,14 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/api/todos",
+              "raw": "{{baseUrl}}/api/todos/create",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
-                "todos"
+                "todos",
+                "create"
               ]
             }
           },
@@ -273,13 +275,14 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/todos",
+              "raw": "{{baseUrl}}/api/todos/list",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
-                "todos"
+                "todos",
+                "list"
               ]
             }
           },
@@ -297,13 +300,14 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/todos/{{todoId}}",
+              "raw": "{{baseUrl}}/api/todos/detail/{{todoId}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "todos",
+                "detail",
                 "{{todoId}}"
               ]
             }
@@ -313,7 +317,7 @@
         {
           "name": "Update Todo",
           "request": {
-            "method": "PUT",
+            "method": "PATCH",
             "header": [
               {
                 "key": "Content-Type",
@@ -336,13 +340,14 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/api/todos/{{todoId}}",
+              "raw": "{{baseUrl}}/api/todos/update/{{todoId}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "todos",
+                "update",
                 "{{todoId}}"
               ]
             }
@@ -361,13 +366,14 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/todos/{{todoId}}",
+              "raw": "{{baseUrl}}/api/todos/delete/{{todoId}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "todos",
+                "delete",
                 "{{todoId}}"
               ]
             }
