@@ -7,3 +7,16 @@ CREATE TABLE users (
     PRIMARY KEY (username),
     UNIQUE (token)
 );
+
+CREATE TABLE todos (
+    id BIGSERIAL,
+    judul VARCHAR(255) NOT NULL,
+    deskripsi TEXT,
+    status VARCHAR(50) NOT NULL,
+    tenggat_waktu DATE,
+    username VARCHAR(100),
+    dibuat_pada TIMESTAMP,
+    diperbarui_pada TIMESTAMP,
+    PRIMARY KEY (id),
+    FOREIGN KEY (username) REFERENCES users(username)
+);

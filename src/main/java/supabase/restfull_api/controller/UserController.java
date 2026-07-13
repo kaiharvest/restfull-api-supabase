@@ -35,7 +35,7 @@ public class UserController {
     }
 
     @RequestMapping(
-            path = {"/api/users/current"},
+            path = {"/api/users/current", "/api/users/curerent"},
             method = {RequestMethod.GET, RequestMethod.POST},
             produces = MediaType.APPLICATION_JSON_VALUE
     )
@@ -48,7 +48,7 @@ public class UserController {
 
 
     @PatchMapping(
-            path = {"/api/users/current"},
+            path = {"/api/users/current", "/api/users/curerent"},
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
@@ -60,7 +60,7 @@ public class UserController {
     }
 
     @DeleteMapping(
-            path = {"/api/users/current"},
+            path = {"/api/users/current", "/api/users/curerent"},
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public WebResponse<String> logout(User user) {

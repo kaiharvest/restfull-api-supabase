@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
     # Service Database PostgreSQL lokal
     db:
@@ -13,6 +11,27 @@ services:
             - "5433:5432" # Port 5433 di host dipetakan ke 5432 di container agar tidak bentrok jika host sudah punya Postgres
         volumes:
             - postgres_data:/var/lib/postgresql/data
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U postgres -d restfull_db"]
+            interval: 5s
+            timeout: 5s
+            retries: 5
+        networks:
+            - jaringan_aplikasi
+
+    # Service Redis lokal
+    redis:
+        image: redis:7-alpine
+        container_name: restfull_api_redis
+        ports:
+            - "6379:6379" # Port default Redis
+        volumes:
+            - redis_data:/data
+        healthcheck:
+            test: ["CMD", "redis-cli", "ping"]
+            interval: 5s
+            timeout: 5s
+            retries: 5
         networks:
             - jaringan_aplikasi
 
@@ -23,19 +42,25 @@ services:
             dockerfile: Dockerfile
         container_name: restfull_api_app
         ports:
-            - "8080:8080" # Port aplikasi
+            - "8081:8080" # Diubah ke 8081 di host agar tidak bentrok jika port 8080 sedang digunakan oleh aplikasi local Spring Boot
         environment:
             SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/restfull_db
             SPRING_DATASOURCE_USERNAME: postgres
             SPRING_DATASOURCE_PASSWORD: password123
+            SPRING_DATA_REDIS_HOST: redis
+            SPRING_DATA_REDIS_PORT: 6379
             PORT: 8080
         depends_on:
-            - db
+            db:
+                condition: service_healthy
+            redis:
+                condition: service_healthy
         networks:
             - jaringan_aplikasi
 
 volumes:
     postgres_data: # Volume untuk menyimpan data database secara persisten
+    redis_data: # Volume untuk menyimpan data cache Redis secara persisten
 
 networks:
     jaringan_aplikasi:
