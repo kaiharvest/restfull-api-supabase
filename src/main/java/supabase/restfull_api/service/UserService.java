@@ -19,6 +19,8 @@ import java.util.UUID;
 @Service
 public class UserService {
 
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(UserService.class);
+
     @Autowired
     private UserRepository userRepository;
 
@@ -27,9 +29,11 @@ public class UserService {
 
     @Transactional
     public void register(RegisterUserRequest request) {
+        log.info("Memulai proses registrasi untuk username: {}", request.getUsername());
         validationService.validate(request);
 
         if (userRepository.existsById(request.getUsername())) {
+            log.warn("Registrasi gagal: Username {} sudah terdaftar", request.getUsername());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already registered");
         }
 
@@ -40,16 +44,22 @@ public class UserService {
                 .build();
 
         userRepository.save(user);
+        log.info("User {} berhasil terdaftar", request.getUsername());
     }
 
     @Transactional
     public LoginResponse login(LoginUserRequest request) {
+        log.info("Memulai proses login untuk username: {}", request.getUsername());
         validationService.validate(request);
 
         User user = userRepository.findById(request.getUsername())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Username or password wrong"));
+                .orElseThrow(() -> {
+                    log.warn("Login gagal: Username {} tidak ditemukan", request.getUsername());
+                    return new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Username or password wrong");
+                });
 
         if (!BCrypt.checkpw(request.getPassword(), user.getPassword())) {
+            log.warn("Login gagal: Sandi untuk username {} salah", request.getUsername());
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Username or password wrong");
         }
 
@@ -60,10 +70,15 @@ public class UserService {
         user.setToken(token);
         user.setTokenExpiredAt(tokenExpiredAt);
         userRepository.save(user);
+        log.info("User {} berhasil login, token baru dibuat", request.getUsername());
 
         return LoginResponse.builder()
                 .token(token)
                 .expiredAt(tokenExpiredAt)
+                .user(UserResponse.builder()
+                        .username(user.getUsername())
+                        .name(user.getName())
+                        .build())
                 .build();
     }
 

@@ -17,4 +17,7 @@ public class LoginResponse {
 
     @JsonProperty("expiredAt")
     private Long expiredAt;
+
+    @JsonProperty("user")
+    private UserResponse user;
 }

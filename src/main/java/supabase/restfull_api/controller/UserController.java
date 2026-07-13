@@ -10,6 +10,8 @@ import supabase.restfull_api.service.UserService;
 @RestController
 public class UserController {
 
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(UserController.class);
+
     @Autowired
     private UserService userService;
 
@@ -19,6 +21,7 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public WebResponse<String> register(@RequestBody RegisterUserRequest request) {
+        log.info("Menerima request POST /api/users/register untuk username: {}", request.getUsername());
         userService.register(request);
         return WebResponse.<String>builder()
                 .data("OK")
@@ -30,8 +33,12 @@ public class UserController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public LoginResponse login(@RequestBody LoginUserRequest request) {
-        return userService.login(request);
+    public WebResponse<LoginResponse> login(@RequestBody LoginUserRequest request) {
+        log.info("Menerima request POST /api/users/login untuk username: {}", request.getUsername());
+        LoginResponse response = userService.login(request);
+        return WebResponse.<LoginResponse>builder()
+                .data(response)
+                .build();
     }
 
     @RequestMapping(

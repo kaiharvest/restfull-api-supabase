@@ -1,4 +1,4 @@
-# RESTful API Todo List (Spring Boot, Supabase, & Redis)
+# Applikasi Todolist (Spring Boot, Supabase, Redis, Docker, Kubernetes)
 
 Proyek ini adalah implementasi RESTful API backend menggunakan **Java Spring Boot**, terintegrasi dengan **PostgreSQL (Supabase)** sebagai basis data utama dan **Redis** untuk manajemen sesi atau *caching*. Aplikasi ini menyediakan layanan manajemen pengguna (*user management*) serta pengelolaan daftar tugas (*todo list*) yang aman dengan autentikasi berbasis token kustom.
 
@@ -14,6 +14,7 @@ Proyek ini adalah implementasi RESTful API backend menggunakan **Java Spring Boo
 *   **Security & Encryption**: Spring Security Crypto (BCrypt)
 *   **Boilerplate Reducer**: Lombok
 *   **Containerization**: Docker & Docker Compose
+*   **Orchestration**: Kubernetes (k8s)
 *   **Testing**: JUnit 5, MockMvc, & H2 Database (untuk test terisolasi)
 *   **Frontend Integration**: React.js & Vite (untuk pengembangan antarmuka pengguna)
 
@@ -280,6 +281,58 @@ export default defineConfig({
 
 ---
 
+## ☸️ Orkestrasi dengan Kubernetes (k8s)
+
+Untuk skenario *production* atau uji coba orkestrasi di lingkungan lokal (seperti **Minikube** atau **Kind**), proyek ini menyediakan berkas manifes Kubernetes lengkap yang mencakup basis data PostgreSQL dan replikasi aplikasi.
+
+Manifes ini didefinisikan di dalam folder [k8s/k8s-manifest.yml](file:///Users/indra/Development/Java/restfull-api-supabase/k8s/k8s-manifest.yml).
+
+### 1. Komponen Manifes Kubernetes
+*   **PersistentVolumeClaim (postgres-pvc)**: Mengalokasikan penyimpanan persisten sebesar 1Gi untuk database PostgreSQL agar data tidak hilang saat pod dijalankan ulang.
+*   **PostgreSQL Deployment & Service (db-service)**: Menjalankan database dan mengeksposnya secara internal ke dalam klaster dengan nama DNS `db-service:5432`.
+*   **Application Deployment (app-deployment)**: Menjalankan **2 replika pod aplikasi** untuk menjamin ketersediaan tinggi (*high availability*) dan penyeimbangan beban kerja (*load balancing*).
+*   **Application Service (app-service)**: Mengekspos API secara eksternal menggunakan tipe `NodePort` di port `30080`.
+
+### 2. Cara Menjalankan di Minikube (Klaster Lokal)
+
+#### Langkah A: Mulai Minikube & Konfigurasi Docker Daemon
+Gunakan Docker daemon milik Minikube agar Kubernetes dapat membaca image lokal tanpa perlu diunggah ke Docker Hub:
+```bash
+minikube start
+eval $(minikube docker-env)
+```
+
+#### Langkah B: Build Image Docker Aplikasi
+Jalankan proses pembuatan image Docker langsung di dalam lingkungan Minikube:
+```bash
+docker build -t restfull-api-supabase:latest .
+```
+
+#### Langkah C: Menerapkan Manifes Kubernetes
+Jalankan perintah ini di root direktori proyek untuk menerapkan seluruh konfigurasi:
+```bash
+kubectl apply -f k8s/k8s-manifest.yml
+```
+
+#### Langkah D: Memeriksa Status Pod & Service
+Pastikan seluruh pod PostgreSQL dan aplikasi berjalan dengan sukses:
+```bash
+kubectl get pods
+kubectl get services
+```
+
+#### Langkah E: Mengakses Aplikasi
+Anda dapat mengakses aplikasi melalui IP node Minikube di port `30080`:
+```bash
+minikube service app-service --url
+```
+*Atau gunakan perintah port-forwarding untuk memetakan langsung ke localhost:*
+```bash
+kubectl port-forward service/app-service 8080:8080
+```
+
+---
+
 ## 📂 Struktur Berkas Utama
 
 Untuk mempermudah navigasi kode, berikut adalah tautan langsung ke berkas-berkas penting dalam proyek:
@@ -299,3 +352,4 @@ Untuk mempermudah navigasi kode, berikut adalah tautan langsung ke berkas-berkas
 *   **Layanan Virtualisasi**:
     *   [docker-compose.yml](file:///Users/indra/Development/Java/restfull-api-supabase/docker-compose.yml) - Orkestrasi database & Redis lokal.
     *   [Dockerfile](file:///Users/indra/Development/Java/restfull-api-supabase/Dockerfile) - Blueprint docker build.
+    *   [k8s-manifest.yml](file:///Users/indra/Development/Java/restfull-api-supabase/k8s/k8s-manifest.yml) - Orkestrasi klaster Kubernetes.

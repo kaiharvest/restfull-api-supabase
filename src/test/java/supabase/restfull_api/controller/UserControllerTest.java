@@ -124,17 +124,28 @@ class UserControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request))
-        ).andExpect(
-                status().isOk()
+        ).andExpectAll(
+                status().isOk(),
+                jsonPath("$.data.token").exists(),
+                jsonPath("$.data.expiredAt").exists(),
+                jsonPath("$.data.user.username").value("budi"),
+                jsonPath("$.data.user.name").value("Budi Sudarsono"),
+                jsonPath("$.errors").isEmpty()
         ).andReturn().getResponse().getContentAsString();
 
-        LoginResponse loginResponse = objectMapper.readValue(responseContent, LoginResponse.class);
-        assertNotNull(loginResponse.getToken());
-        assertNotNull(loginResponse.getExpiredAt());
-        assertTrue(loginResponse.getExpiredAt() > System.currentTimeMillis());
+        @SuppressWarnings("unchecked")
+        java.util.Map<String, Object> responseMap = objectMapper.readValue(responseContent, java.util.Map.class);
+        @SuppressWarnings("unchecked")
+        java.util.Map<String, Object> dataMap = (java.util.Map<String, Object>) responseMap.get("data");
+        String token = (String) dataMap.get("token");
+        Long expiredAt = ((Number) dataMap.get("expiredAt")).longValue();
+
+        assertNotNull(token);
+        assertNotNull(expiredAt);
+        assertTrue(expiredAt > System.currentTimeMillis());
 
         User afterLogin = userRepository.findById("budi").orElseThrow();
-        assertEquals(loginResponse.getToken(), afterLogin.getToken());
+        assertEquals(token, afterLogin.getToken());
     }
 
     @Test
